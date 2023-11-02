@@ -39,6 +39,10 @@ body{
         font-size: 1rem;
     }
 
+    .left-nav, .main-nav{
+        animation: fade-down 1s;
+    }
+
     .name{
         font-size: 1.9rem;
         
@@ -130,7 +134,29 @@ main{
         animation-delay: 2s;
     }
 
+    .first-dialogue-box::after, .second-dialogue-box::after{
+        content: '  ';
+        position: absolute;
+        border-left: 10px solid #4A4E69;
+        border-right: 10px solid transparent;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        bottom: -10px;
+        left: 0px;
+    }
 }
+
+@keyframes fade-down {
+    from{
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 
 /*animation for main*/
 @keyframes slow-appear {
