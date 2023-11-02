@@ -132,6 +132,7 @@ main{
 
 }
 
+/*animation for main*/
 @keyframes slow-appear {
     0%{
         width: 0;
