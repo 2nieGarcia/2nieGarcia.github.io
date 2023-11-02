@@ -4,18 +4,19 @@
 }
 
 @font-face {
-    font-family: fivefontsatfreddys;
+    font-family: ffaf;
     src: url(/static/fonts/FiveFontsatFreddys-Regular.ttf);
 }
 
 :root{
     font-size: 16px;
+    
 }
 
 *{
     padding: 0;
     margin: 0;
-    font-family: 'fivefontsatfreddys';
+    font-family: 'ffaf';
 }
 
 body{
@@ -52,7 +53,8 @@ body{
         font-size: 1.3rem;
         margin: 0 1rem;
 
-        transition-duration: 0.2s;
+        transition: all 0.2s ease 0s;
+
     }
     
     .main-nav a:hover{
@@ -65,13 +67,14 @@ body{
     .contact{
         font-size: 1.2rem;
         padding-top: 5px;
-        width: 8rem;
+        width: 20vh;
         height: 7vh;
         background-color: #4A4E69;
         color: #F2E9E4;
         font-family: 'minecraft';
         
-        transition-duration: 0.1s;
+        transition: all 0.3s ease 0s;
+
     }
     
     .contact:hover{
@@ -84,4 +87,69 @@ body{
 /* Main */
 main{
     display: flex;
+    flex-direction: row;
+    padding: 8vh 30vh;
+
+    .left-main img{
+        width: 15rem;
+        border-radius: 100%;
+        border: solid #4A4E69;
+    }
+
+    .first-dialogue-box, .second-dialogue-box{
+        display: inline-block;
+        background-color: #4A4E69;
+        border-radius: 10px;
+        border: solid black;
+        border-width: 0px 3px 3px 0px;
+        margin: 2vh 5vh;
+        padding: 2vh 10vh;
+        opacity: 0;
+        width: 100%;
+
+        animation: slow-appear 3s;
+        animation-fill-mode: forwards;
+    }
+
+    
+
+    .second-dialogue-box{
+        animation-delay: 2s;
+    }
+
+    .first-dialogue, .second-dialogue{
+        font-size: 1.2rem;
+        color:#F2E9E4;
+        white-space: nowrap;
+        overflow: hidden;
+        animation: typing 3s;
+        animation-fill-mode: forwards;
+    }
+
+    .second-dialogue{
+        animation-delay: 2s;
+    }
+
+}
+
+@keyframes slow-appear {
+    0%{
+        width: 0;
+        opacity: 1;
+        transform: translateY(50px);
+    }
+    100%{
+        width: 80%;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to{
+        width: 100%;
+    }
 }
