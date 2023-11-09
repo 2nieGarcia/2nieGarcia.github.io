@@ -10,7 +10,11 @@
 
 :root{
     font-size: 16px;
-    
+    --dark-bg: #22223b;
+    --dark-text-bg: #4A4E69;
+    --dark-text-color: #F2E9E4;
+    --dark-text-color-secondary: #C9ADA7;
+    --dark-highlight: #fa8d76;
 }
 
 *{
@@ -20,7 +24,7 @@
 }
 
 body{
-    background-color: #22223b;
+    background-color: var(--dark-bg);
 }
 
 /* Navigation */
@@ -31,9 +35,9 @@ body{
     justify-content: space-evenly;
     font-size: 2rem;
     font-family: 'minecraft';
-    color: #C9ADA7;
+    color: var(--dark-text-color-secondary);
     background-color: rgba(34, 34, 59, 0.2);
-    border-bottom: solid #C9ADA7;
+    border-bottom: solid var(--dark-text-color-secondary);
 
     animation: fade-down 1.5s;
 
@@ -55,7 +59,7 @@ body{
     .main-nav a{
         display: inline-block;
         text-decoration: none;
-        color: #C9ADA7;
+        color: var(--dark-text-color-secondary);
         font-size: 1.3rem;
         margin: 0 1rem;
 
@@ -75,8 +79,9 @@ body{
         padding-top: 5px;
         width: 20vh;
         height: 7vh;
-        background-color: #4A4E69;
-        color: #F2E9E4;
+        border-radius: 5px;
+        background-color: var(--dark-highlight);
+        color: var(--dark-text-bg);
         font-family: 'minecraft';
         
         transition: all 0.3s ease-out 0s;
@@ -85,8 +90,9 @@ body{
     
     .contact:hover{
         transform: translateY(-3px);
-        background-color: #F2E9E4;
-        color: #4A4E69;
+        background-color: var(--dark-highlight);
+        color: white;
+        scale: 1.05;
     }
 }
 
@@ -99,14 +105,14 @@ main{
     .left-main img{
         width: 15rem;
         border-radius: 100%;
-        border: solid #4A4E69;
+        border: solid var(--dark-text-bg);
 
         animation: scale-out ease-in-out 0.5s;
     }
 
     .first-dialogue-box, .second-dialogue-box{
         display: inline-block;
-        background-color: #4A4E69;
+        background-color: var(--dark-text-bg);
         border-radius: 10px;
         border: solid black;
         border-width: 0px 3px 3px 0px;
@@ -146,7 +152,7 @@ main{
     .first-dialogue-box::after, .second-dialogue-box::after{
         content: '  ';
         position: absolute;
-        border-left: 10px solid #4A4E69;
+        border-left: 10px solid var(--dark-text-bg);
         border-right: 10px solid transparent;
         border-top: 10px solid transparent;
         border-bottom: 10px solid transparent;
@@ -210,3 +216,74 @@ main{
         width: 100%;
     }
 }
+
+/* STILL LEARNING */
+/* .editorial {
+    display: block;
+    width: 100%;
+    height: 60px;
+    max-height: 60px;
+    margin: 0;
+    z-index:5;
+    bottom:0;
+    position:absolute;
+    left:0px;
+    float:left;
+  }
+  
+  .parallax1 > use {
+    animation: move-forever1 10s linear infinite;
+    &:nth-child(1) {
+      animation-delay: -2s;
+    }
+  }
+  .parallax2 > use {
+    animation: move-forever2 8s linear infinite;
+    &:nth-child(1) {
+      animation-delay: -2s;
+    }
+  }
+  .parallax3 > use {
+    animation: move-forever3 6s linear infinite;
+    &:nth-child(1) {
+      animation-delay: -2s;
+    }
+  }
+  .parallax4 > use {
+    animation: move-forever4 4s linear infinite;
+    &:nth-child(1) {
+      animation-delay: -2s;
+    }
+  }
+  @keyframes move-forever1 {
+    0% {
+      transform: translate(85px, 0%);
+    }
+    100% {
+      transform: translate(-90px, 0%);
+    }
+  }
+  @keyframes move-forever2 {
+    0% {
+      transform: translate(-90px, 0%);
+    }
+    100% {
+      transform: translate(85px, 0%);
+    }
+  }
+  @keyframes move-forever3 {
+    0% {
+      transform: translate(85px, 0%);
+    }
+    100% {
+      transform: translate(-90px, 0%);
+    }
+  }
+  @keyframes move-forever4 {
+    0% {
+      transform: translate(-90px, 0%);
+    }
+    100% {
+      transform: translate(85px, 0%);
+    }
+  } */
