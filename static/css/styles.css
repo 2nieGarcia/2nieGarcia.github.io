@@ -11,10 +11,10 @@
 :root{
     font-size: 16px;
     --dark-bg: #22223b;
-    --dark-text-bg: #4A4E69;
+    --dark-bg-secondary: #505078;
+    --dark-text-bg: #4b4f6c;
     --dark-text-color: #F2E9E4;
-    --dark-text-color-secondary: #C9ADA7;
-    --dark-highlight: #fa8d76;
+    --dark-highlight: #f7d2ca;
 }
 
 *{
@@ -35,9 +35,9 @@ body{
     justify-content: space-evenly;
     font-size: 2rem;
     font-family: 'minecraft';
-    color: var(--dark-text-color-secondary);
+    color: var(--dark-highlight);
     background-color: rgba(34, 34, 59, 0.2);
-    border-bottom: solid var(--dark-text-color-secondary);
+    border-bottom: solid var(--dark-highlight);
 
     animation: fade-down 1.5s;
 
@@ -59,7 +59,7 @@ body{
     .main-nav a{
         display: inline-block;
         text-decoration: none;
-        color: var(--dark-text-color-secondary);
+        color: var(--dark-highlight);
         font-size: 1.3rem;
         margin: 0 1rem;
 
@@ -94,13 +94,17 @@ body{
         color: white;
         scale: 1.05;
     }
+
+    
 }
 
 /* Main */
-main{
+.first-section{
     display: flex;
     flex-direction: row;
     padding: 8vh 30vh;
+    position: relative;
+    min-height: 65vh;
 
     .left-main img{
         width: 15rem;
@@ -119,7 +123,7 @@ main{
         margin: 2vh 5vh;
         padding: 2vh 10vh;
         opacity: 0;
-        width: 100%;
+        width: 90%;
 
         animation: slow-appear 2s;
         animation-delay: 1s;
@@ -159,8 +163,34 @@ main{
         bottom: -10px;
         left: 0px;
     }
+
+    .custom-shape-divider-bottom-1700054574 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+        transform: rotate(180deg);
+    }
+    
+    .custom-shape-divider-bottom-1700054574 svg {
+        position: relative;
+        display: block;
+        width: calc(100% + 1.3px);
+        height: 150px;
+    }
+    
+    .custom-shape-divider-bottom-1700054574 .shape-fill {
+        fill: var(--dark-bg-secondary);
+    }
 }
 
+
+.second-section{
+    background-color: var(--dark-bg-secondary);
+    min-height: 65vh;
+}
 
 
 @keyframes fade-down {
