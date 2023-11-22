@@ -8,6 +8,16 @@
     src: url(/static/fonts/FiveFontsatFreddys-Regular.ttf);
 }
 
+@font-face {
+    font-family: bitfont;
+    src: url(/static/fonts/8-bit.ttf);
+}
+
+/* colors i like 
+#505078
+
+*/
+
 :root{
     font-size: 16px;
     --dark-bg: #22223b;
@@ -91,7 +101,7 @@ body{
     .contact:hover{
         transform: translateY(-3px);
         background-color: var(--dark-highlight);
-        color: white;
+        text-shadow: 1px 1px 10px #caeff7;
         scale: 1.05;
     }
 
@@ -190,6 +200,31 @@ body{
 .second-section{
     background-color: var(--dark-bg-secondary);
     min-height: 65vh;
+    padding: 10vh;
+    color: var(--dark-text-color);
+    
+    .wrapper{
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+    }
+
+    .about{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        border-bottom: solid var(--dark-text-color);
+        margin-bottom: 5vh;
+    }
+
+    .about h1{
+        font-family: 'bitfont';
+        color: var(--dark-text-color);
+        text-shadow: 1px 7px black;
+        font-size: 5rem;
+        margin-bottom: 2vh;
+    }
 }
 
 
