@@ -1,0 +1,16 @@
+---
+// Generated contour cover for projects without screenshots: the same visual language as the page background, seeded by slug.
+import { coverSvg } from '../lib/cover';
+
+interface Props {
+  seed: string;
+}
+const { seed } = Astro.props;
+---
+
+<div class="cover" aria-hidden="true" set:html={coverSvg(seed)} />
+
+<style>
+  .cover { aspect-ratio: 16 / 9; }
+  .cover :global(svg) { display: block; width: 100%; height: 100%; }
+</style>

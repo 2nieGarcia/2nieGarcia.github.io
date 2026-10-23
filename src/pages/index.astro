@@ -1,0 +1,49 @@
+---
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Home from '../components/home/Home';
+import { coverDataUri } from '../lib/cover';
+
+const byOrder = (a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) =>
+  a.data.order - b.data.order || b.data.pushedAt.localeCompare(a.data.pushedAt);
+const projects = await Promise.all(
+  (await getCollection('projects')).sort(byOrder).map(async (p) => ({
+    slug: p.id,
+    title: p.data.title,
+    tagline: p.data.tagline ?? '',
+    stack: p.data.stack,
+    note: p.data.note,
+    href: `/projects/${p.id}/`,
+    image: p.data.screenshots[0] ? (await getImage({ src: p.data.screenshots[0], inferSize: true, width: 1100 })).src : coverDataUri(p.id),
+  })),
+);
+
+// Gallery: drop photos into src/assets/gallery/. The file name is the caption: "02-pitching-nura.jpg" -> "pitching nura".
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.{jpg,jpeg,png,webp,avif}', { eager: true });
+const photos = await Promise.all(
+  Object.entries(files)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(async ([path, mod]) => ({
+      src: (await getImage({ src: mod.default, width: 1200 })).src,
+      caption: path.split('/').pop()!.replace(/\.\w+$/, '').replace(/^\d+[-_]?/, '').replace(/[-_]+/g, ' '),
+    })),
+);
+
+const leadership = await getEntry('about', 'leadership');
+---
+
+<Base
+  title="Antonio B. Garcia Jr. | AI Engineer"
+  description="AI engineer building RAG pipelines, multi-agent systems, and the hardware they talk to, and leading the hackathon teams that ship them."
+>
+  <Home client:only="react" projects={projects} photos={photos} leadershipHtml={leadership?.rendered?.html ?? ''} />
+  <noscript>
+    <main style="padding: 4rem 1.5rem; max-width: 46rem; margin: 0 auto">
+      <h1>Antonio B. Garcia Jr.</h1>
+      <p>AI engineer. I build RAG pipelines, multi-agent systems, and the hardware they talk to.</p>
+      <ul>{projects.map((p) => <li><a href={p.href}>{p.title}</a>{p.tagline && ` — ${p.tagline}`}</li>)}</ul>
+      <p><a href="mailto:garciaantoniojrb@gmail.com">garciaantoniojrb@gmail.com</a></p>
+    </main>
+  </noscript>
+</Base>

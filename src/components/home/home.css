@@ -1,0 +1,120 @@
+
+
+.hm-main { position: relative; z-index: 1; }
+
+/* hero: TechText name, a role line, a scroll cue */
+.hm-hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 6rem var(--gutter) 3rem; max-width: 84rem; margin: 0 auto; position: relative; }
+.hm-tech { height: clamp(9rem, 15vw, 13rem); position: relative; margin-bottom: 1rem; }
+.hm-role { font: 500 clamp(1rem, 1.6vw, 1.25rem) var(--mono); color: var(--muted); margin: 0; }
+.hm-role .scrambled-text { margin: 0; max-width: none; font: inherit; }
+.hm-role .scrambled-text p { margin: 0; }
+.hm-scroll { position: absolute; left: 50%; bottom: 2rem; transform: translateX(-50%); display: grid; justify-items: center; gap: 0.6rem; color: var(--muted); text-decoration: none; font: 0.75rem var(--mono); letter-spacing: 0.2em; text-transform: uppercase; }
+.hm-scroll i { width: 1px; height: 3.5rem; background: linear-gradient(var(--accent), transparent); position: relative; overflow: hidden; }
+.hm-scroll i::after { content: ''; position: absolute; left: 0; top: -40%; width: 1px; height: 40%; background: var(--fg); animation: hm-drip 1.8s cubic-bezier(0.6, 0, 0.2, 1) infinite; }
+@keyframes hm-drip { to { top: 100%; } }
+@media (prefers-reduced-motion: reduce) { .hm-scroll i::after { animation: none; } }
+
+/* the big reveal: a framed panel opens to full bleed, then the words light up */
+.rv { height: 100svh; position: relative; }
+.rv-panel { position: absolute; inset: 0; overflow: hidden; background: #050709; border-block: 1px solid var(--line); }
+.rv-glow { position: absolute; left: 50%; top: 50%; width: 120vmax; height: 120vmax; margin: -60vmax 0 0 -60vmax; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--accent) 22%, transparent) 0%, transparent 55%); }
+.rv-grid { position: absolute; inset: 0; background-image: linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%); }
+.rv-inner { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; max-width: 72rem; margin: 0 auto; padding: 0 var(--gutter); }
+.rv-text { font: var(--display-weight, 600) clamp(1.5rem, 3.2vw, 3rem) / 1.18 var(--display); letter-spacing: -0.02em; margin: 0 0 3rem; }
+.rv-word { display: inline-block; white-space: pre; will-change: transform, filter, opacity; }
+.rv-hot { color: var(--accent); }
+
+/* section headings */
+.hm-section { max-width: 80rem; margin: 0 auto; padding: clamp(6rem, 12vw, 10rem) var(--gutter) 0; }
+.hm-section h2, .hm-pinned h2 { font: var(--display-weight, 600) clamp(2.1rem, 5.4vw, 4.6rem) / 1 var(--display); letter-spacing: -0.02em; text-transform: uppercase; margin: 0 0 2rem; }
+.hm-section h2 .scrambled-text, .hm-pinned h2 .scrambled-text { margin: 0; max-width: none; font: inherit; }
+.hm-section h2 .scrambled-text p, .hm-pinned h2 .scrambled-text p { margin: 0; }
+.hm-h2-stroke { margin: 0 0 2rem; max-width: 100%; overflow: hidden; }
+.hm-about p { font-size: clamp(1.15rem, 2vw, 1.5rem); max-width: 46rem; }
+.hm-muted { color: var(--muted); font-size: 0.95rem; }
+.hm-timeline { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.hm-timeline li { display: grid; grid-template-columns: 12rem 1fr; gap: 0.25rem 2rem; padding: 1.25rem 0; border-bottom: 1px solid var(--line); }
+.hm-timeline span { font: 0.8rem var(--mono); color: var(--accent); grid-row: span 2; padding-top: 0.3rem; }
+.hm-timeline strong { font: var(--display-weight, 600) 1.1rem var(--display); }
+.hm-timeline em { font-style: normal; color: var(--muted); }
+.hm-close { padding-bottom: 10rem; }
+.hm-close-stroke { margin: 0 0 1.5rem; max-width: 100%; overflow: hidden; }
+.hm-contact { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; font-size: 1.15rem; }
+
+/* the element Ask Antonio just pointed to */
+.hm-pinged { outline: 2px solid var(--accent); outline-offset: 8px; border-radius: 8px; animation: hm-ping 2.4s ease-out; }
+@keyframes hm-ping { 0%, 40% { outline-color: var(--accent); } 100% { outline-color: transparent; } }
+
+/* projects: pinned sideways track with the stack marquee */
+.hm-pinned { height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 1.25rem; overflow: hidden; }
+.hm-pinned-head { padding: 0 var(--gutter); }
+.hm-pinned h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4rem); }
+.hm-marquee { padding: 0.9rem 0; border-block: 1px solid var(--line); background: color-mix(in oklab, var(--bg) 75%, transparent); }
+.hm-chip { font: 500 0.85rem var(--mono); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 0.3rem 0.85rem; white-space: nowrap; }
+.hm-track { display: flex; gap: 2rem; padding: 0 var(--gutter); width: max-content; }
+.hm-panel-card { width: min(32rem, 80vw); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; transition: border-color 0.25s; }
+.hm-panel-card:hover { border-color: var(--accent); }
+.hm-panel-card img { display: block; width: 100%; aspect-ratio: 16 / 7.5; object-fit: cover; object-position: top left; border-bottom: 1px solid var(--line); }
+.hm-card-body { padding: 1.1rem 1.4rem 1.3rem; }
+.hm-index { font: 0.75rem var(--mono); color: var(--accent); }
+.hm-card-body h3 { font: var(--display-weight, 600) clamp(1.15rem, 1.7vw, 1.45rem)/1.15 var(--display); letter-spacing: -0.01em; margin: 0.35rem 0 0.5rem; }
+.hm-card-body p { color: var(--muted); margin: 0 0 0.5rem; font-size: 0.93rem; }
+.hm-note { font: 500 0.8rem var(--mono); color: var(--accent) !important; }
+.hm-stack { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.9rem; padding: 0; }
+.hm-stack li { font: 0.7rem var(--mono); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 0.12rem 0.55rem; }
+.hm-more { font-weight: 600; }
+
+/* hackathons reel */
+.hm-gallery { height: 62svh; position: relative; margin-top: 1rem; }
+
+/* Ask Antonio: a blocky HUD tab in the bottom-right that opens into a navigation panel */
+.mm { pointer-events: none; position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 55; display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem; --notch: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+.mm-tab { order: 2; display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.9rem; background: rgb(5 7 9 / 0.92); color: var(--fg); border: 0; clip-path: var(--notch); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 55%, var(--line)); font: var(--display-weight, 600) 0.8rem var(--display); letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.mm-tab:hover, .mm.is-open .mm-tab { background: var(--accent); color: var(--bg); }
+.mm-tab kbd { font: 600 0.7rem var(--mono); padding: 0.05rem 0.4rem; box-shadow: inset 0 0 0 1px currentColor; opacity: 0.7; }
+.mm-led { width: 0.55rem; height: 0.55rem; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: mm-blink 1.2s steps(2, start) infinite; }
+.mm-tab:hover .mm-led, .mm.is-open .mm-led { background: var(--bg); box-shadow: none; }
+@keyframes mm-blink { 50% { opacity: 0.25; } }
+.mm-panel { width: min(23rem, calc(100vw - 2.5rem)); background: rgb(5 7 9 / 0.95); clip-path: var(--notch); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 40%, var(--line)); backdrop-filter: blur(10px); transform-origin: bottom right; transform: translateY(12px); opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s; }
+.mm.is-open .mm-panel { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s, transform 0.2s; }
+.mm-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0.9rem; background: color-mix(in oklab, var(--accent) 14%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, var(--line)); font: var(--display-weight, 600) 0.72rem var(--display); letter-spacing: 0.16em; color: var(--accent); }
+.mm-status { display: inline-flex; align-items: center; gap: 0.4rem; font: 0.68rem var(--mono); letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+.mm-status i { width: 0.4rem; height: 0.4rem; background: var(--accent); }
+.mm-log { list-style: none; margin: 0; padding: 0.8rem 0.9rem 0.4rem; display: grid; gap: 0.3rem; max-height: 15rem; overflow: auto; scrollbar-width: none; font: 0.78rem/1.5 var(--mono); background: repeating-linear-gradient(0deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 3px); }
+.mm-sys { color: var(--muted); }
+.mm-sys::before { content: '> '; color: color-mix(in oklab, var(--accent) 60%, var(--muted)); }
+.mm-ok { color: var(--accent); font-weight: 600; letter-spacing: 0.04em; }
+.mm-err { color: #ff4d6d; }
+.mm-you { color: var(--fg); }
+.mm-ps { color: var(--accent); }
+/* a retrieved record: framed like a file pulled off the server */
+.mm-hit { margin: 0.35rem 0; padding: 0.6rem 0.7rem; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 50%, var(--line)); background: color-mix(in oklab, var(--accent) 6%, transparent); font: 0.84rem/1.5 var(--sans); color: var(--fg); }
+.mm-hit-head { display: flex; justify-content: space-between; gap: 1rem; font: 600 0.62rem var(--mono); letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.3rem; }
+.mm-hit strong { display: block; font: 600 0.9rem var(--display); letter-spacing: 0.02em; margin-bottom: 0.2rem; }
+/* opening glitches in: two jittery frames, then settles */
+.mm.is-open .mm-panel { animation: mm-glitch 0.32s steps(1) 1; }
+@keyframes mm-glitch {
+  0% { clip-path: polygon(0 12%, 100% 12%, 100% 34%, 0 34%); transform: translateX(-6px); }
+  25% { clip-path: polygon(0 58%, 100% 58%, 100% 81%, 0 81%); transform: translateX(5px); }
+  50% { clip-path: var(--notch); transform: translateX(-2px); }
+  100% { clip-path: var(--notch); transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .mm.is-open .mm-panel { animation: none; } }
+.mm-places { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: 0.4rem 0.9rem 0.8rem; background: var(--line); box-shadow: 0 0 0 1px var(--line); }
+.mm-places button { display: grid; gap: 0.15rem; justify-items: start; padding: 0.55rem 0.7rem; background: rgb(5 7 9); color: var(--fg); border: 0; font: var(--display-weight, 600) 0.78rem var(--display); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; text-align: left; transition: background 0.15s, color 0.15s; }
+.mm-n { font: 0.62rem var(--mono); color: var(--accent); letter-spacing: 0; }
+.mm-places button:hover, .mm-places button:focus-visible { background: var(--accent); color: var(--bg); outline: none; }
+.mm-places button:hover .mm-n, .mm-places button:focus-visible .mm-n { color: var(--bg); }
+.mm-line { display: flex; gap: 0.6ch; align-items: baseline; padding: 0.65rem 0.9rem 0.8rem; border-top: 1px solid var(--line); color: var(--accent); font: 0.86rem var(--mono); }
+.mm-field { position: relative; flex: 1; min-width: 0; }
+.mm-field input { width: 100%; background: none; border: 0; color: var(--fg); font: inherit; padding: 0; caret-color: var(--accent); }
+.mm-field input:focus { outline: none; }
+.mm-ph { position: absolute; left: 0; top: 0; color: var(--muted); pointer-events: none; white-space: nowrap; overflow: hidden; max-width: 100%; }
+.mm-field:focus-within .mm-ph { display: none; }
+
+
+@media (max-width: 48rem) {
+  .hm-timeline li { grid-template-columns: 1fr; }
+}
+/* only the tab and the open panel take the pointer, so the hidden panel never catches a hover */
+.mm-tab, .mm.is-open .mm-panel { pointer-events: auto; }
