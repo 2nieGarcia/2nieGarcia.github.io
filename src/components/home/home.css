@@ -104,6 +104,7 @@
 .mm-places button { display: grid; gap: 0.15rem; justify-items: start; padding: 0.55rem 0.7rem; background: rgb(5 7 9); color: var(--fg); border: 0; font: var(--display-weight, 600) 0.78rem var(--display); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; text-align: left; transition: background 0.15s, color 0.15s; }
 .mm-n { font: 0.62rem var(--mono); color: var(--accent); letter-spacing: 0; }
 .mm-places button:hover, .mm-places button:focus-visible { background: var(--accent); color: var(--bg); outline: none; }
+.mm-places button:last-child:nth-child(odd) { grid-column: span 2; } /* odd count (gallery hidden): no empty cell */
 .mm-places button:hover .mm-n, .mm-places button:focus-visible .mm-n { color: var(--bg); }
 .mm-line { display: flex; gap: 0.6ch; align-items: baseline; padding: 0.65rem 0.9rem 0.8rem; border-top: 1px solid var(--line); color: var(--accent); font: 0.86rem var(--mono); }
 .mm-field { position: relative; flex: 1; min-width: 0; }

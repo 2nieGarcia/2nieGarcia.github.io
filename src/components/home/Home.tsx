@@ -241,7 +241,7 @@ function AskAntonio({ hasGallery }: { hasGallery: boolean }) {
       onFocus={() => setOpen(true)}
       onBlur={(e) => !box.current?.contains(e.relatedTarget as Node) && setOpen(false)}
     >
-      <button type="button" className="mm-tab cursor-target" aria-expanded={open} aria-controls="mm-panel" onClick={() => setOpen(!open)}>
+      <button type="button" className="mm-tab cursor-target" aria-expanded={open} aria-controls="mm-panel" onClick={() => setOpen(true)}>
         <span className="mm-led" aria-hidden="true" />
         <span>Ask Antonio</span>
         <kbd>/</kbd>
