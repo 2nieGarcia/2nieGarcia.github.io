@@ -20,7 +20,7 @@ const CHECKS: [string, string[]][] = [
   ['Have you led a team?', ['leadership']],
   ['Anything with hardware?', ['bantay-dagitab']],
   ['where did you study?', ['experience']],
-  ['what RAG systems have you built?', ['ai-powered-lead-generation', 'nura']],
+  ['what RAG systems have you built?', ['nura', 'jurybee']],
   ['healthcare chatbot in Filipino languages', ['nura']],
   ['legal contract analysis with agents', ['jurybee']],
   ['energy monitoring with sensors', ['bantay-dagitab']],
