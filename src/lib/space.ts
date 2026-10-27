@@ -20,11 +20,13 @@ const CHECKS: [string, string[]][] = [
   ['Have you led a team?', ['leadership']],
   ['Anything with hardware?', ['bantay-dagitab']],
   ['where did you study?', ['experience']],
-  ['what RAG systems have you built?', ['nura', 'jurybee']],
+  ['what RAG systems have you built?', ['nura', 'jurybee', 'ai-powered-lead-generation']],
   ['healthcare chatbot in Filipino languages', ['nura']],
   ['legal contract analysis with agents', ['jurybee']],
   ['energy monitoring with sensors', ['bantay-dagitab']],
   ['are you into quant trading?', ['quant']],
+  ['what is your philosophy?', ['philosophy']],
+  ['how did you get into coding?', ['philosophy']],
 ];
 
 const decode = (s: string) =>

@@ -2,7 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob, type Loader } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-export const AREAS = ['ml', 'gamedev', 're', 'quant', 'math', 'leadership', 'career', 'web', 'hardware'] as const;
+export const AREAS = ['ml', 'gamedev', 're', 'quant', 'math', 'leadership', 'career', 'life', 'web', 'hardware'] as const;
 
 const LOGIN = '2nieGarcia';
 const TOPIC = 'portfolio';

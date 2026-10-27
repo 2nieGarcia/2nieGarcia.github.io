@@ -24,4 +24,5 @@ export const AREA_LABEL: Record<string, string> = {
   math: 'mathematics',
   leadership: 'team leadership',
   career: 'education and work experience',
+  life: 'philosophy, values and life outside work',
 };

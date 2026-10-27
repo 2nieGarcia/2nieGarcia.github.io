@@ -12,6 +12,7 @@ const INTENTS: [string, RegExp][] = [
   ['re', /reverse engineer/i],
   ['math', /\bmath|statistic|linear algebra/i],
   ['career', /\bstud(y|ied|ying)\b|school|universit|college|degree|\bjobs?\b|experience|intern|worked at|career/i],
+  ['life', /philosoph|values|motivat|believe|hobb|for fun|free time|outside (of )?work|\bpersonal/i],
 ];
 const BOOST = 0.15;
 
