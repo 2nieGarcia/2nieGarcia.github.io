@@ -25,14 +25,14 @@ const GLYPHS = '01<>/\\{}[]#$%&*';
 const STACK = ['Python', 'TypeScript', 'FastAPI', 'Django', 'React', 'pgvector', 'Supabase', 'Vertex AI', 'Gemini', 'Groq', 'Google ADK', 'n8n', 'Docker', 'PostgreSQL', 'OpenCV', 'ESP8266', 'Kotlin', 'C++'];
 
 const EXPERIENCE = [
-  { when: 'Now', what: 'Machine learning track', where: 'FlyRank, an AI-native organic search platform' },
   { when: '', what: 'Data Science Fellow, Data Modeling track', where: 'Eskwelabs' },
-  { when: '', what: 'Co-founder', where: 'Joy Bread Studios' },
   { when: '3rd year', what: 'BSCS, Machine Learning track', where: 'National University Manila' },
 ];
 
-// *starred* words take the accent (one star pair per word, punctuation stays plain)
-const REVEAL = "I'm a BSCS student working on *AI* *engineering*, full-stack development, and the *hardware* side of things. I build *autonomous* *agents*, web platforms, and sensor rigs that measure something real. Most of it came from *hackathons*, where you can't afford to overthink it.";
+// *starred* words take the accent (one star pair per word, punctuation stays plain).
+// The explanation behind the quote is the /bio/ page, from src/content/about/philosophy.md.
+const QUOTE = 'What stands in the *way* becomes the *way*.';
+const QUOTE_BY = 'Marcus Aurelius, Meditations 5.20';
 
 /* ---------- jumps: pinned sections need their own scroll math ---------- */
 
@@ -72,36 +72,68 @@ const Heading = ({ text }: { text: string }) => (
   <h2><ScrambledText scrambleColor={ACCENT} scrambleChars={GLYPHS}>{text}</ScrambledText></h2>
 );
 
-/* ---------- the big reveal: a panel opens to full bleed, then the description lights up word by word ---------- */
+/* ---------- the big reveal: a viewfinder locks onto the painting, opens to full bleed, then the quote lights up ---------- */
 
-function Reveal() {
+// the viewfinder starts centred on the angel's eye (33.75% 33% of the painting, see .rv-art) and grows to full bleed
+const VIEW_FROM = { top: '15%', right: '47.5%', bottom: '49%', left: '15%' };
+
+function Reveal({ art }: { art: string }) {
   const root = useRef<HTMLElement>(null);
+  const zoom = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.timeline({ scrollTrigger: { id: 'reveal', trigger: root.current, pin: true, start: 'top top', end: '+=260%', scrub: 0.6 } })
-        .fromTo('.rv-panel', { clipPath: 'inset(30% 28% 30% 28% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'power2.inOut', duration: 1 })
-        .fromTo('.rv-glow', { scale: 0.3, opacity: 0 }, { scale: 1.3, opacity: 1, ease: 'none', duration: 1 }, 0)
-        .fromTo('.rv-word', { opacity: 0.07, filter: 'blur(10px)', yPercent: 40 }, { opacity: 1, filter: 'blur(0px)', yPercent: 0, stagger: 0.035, ease: 'power3.out', duration: 0.35 }, 0.55);
+      const { top, right, bottom, left } = VIEW_FROM;
+      gsap.timeline({ scrollTrigger: { id: 'reveal', trigger: root.current, pin: true, start: 'top top', end: '+=180%', scrub: 0.6 } })
+        .fromTo('.rv-panel', { clipPath: `inset(${top} ${right} ${bottom} ${left})` }, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power2.inOut', duration: 1 })
+        .fromTo('.rv-frame', VIEW_FROM, { top: '2%', right: '2%', bottom: '2%', left: '2%', ease: 'power2.inOut', duration: 1 }, 0)
+        .fromTo('.rv-art', { scale: 1.25 }, {
+          scale: 3.2, ease: 'power1.inOut', duration: 1.7,
+          onUpdate() { if (zoom.current) zoom.current.textContent = `x${(gsap.getProperty('.rv-art', 'scale') as number).toFixed(2)}`; },
+        }, 0)
+        // the scan "decodes" the duotone back into the painting's own colours
+        .fromTo('.rv-art', { filter: 'grayscale(1) brightness(0.6) contrast(1.15)' }, { filter: 'grayscale(0.15) brightness(0.62) contrast(1.08)', ease: 'none', duration: 1.2 }, 0.3)
+        .fromTo('.rv-tint', { opacity: 0.85 }, { opacity: 0.12, ease: 'none', duration: 1.2 }, 0.3)
+        .fromTo('.rv-sweep', { top: '-8%' }, { top: '108%', ease: 'none', duration: 1.2 }, 0.3)
+        .fromTo('.rv-reticle', { scale: 2.4, opacity: 0 }, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 0.5)
+        .fromTo('.rv-word', { opacity: 0.07, filter: 'blur(10px)', yPercent: 40 }, { opacity: 1, filter: 'blur(0px)', yPercent: 0, stagger: 0.06, ease: 'power3.out', duration: 0.35 }, 0.95)
+        .fromTo('.rv-after', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3 }, 1.5);
     }, root);
     return () => ctx.revert();
   }, []);
   return (
     <section id="about" ref={root} className="rv">
       <div className="rv-panel">
-        <div className="rv-glow" aria-hidden="true" />
+        <img className="rv-art" src={art} alt="" aria-hidden="true" />
+        <div className="rv-tint" aria-hidden="true" />
+        <div className="rv-shade" aria-hidden="true" />
         <div className="rv-grid" aria-hidden="true" />
+        <div className="rv-sweep" aria-hidden="true" />
+        <div className="rv-reticle" aria-hidden="true"><span>lock</span></div>
         <div className="rv-inner">
-          <p className="rv-text">
-            {REVEAL.split(' ').map((tok, i) => {
-              const [, hot, punct] = tok.match(/^\*(.+)\*([,.]?)$/) ?? [];
-              return hot ? (
-                <span key={i} className="rv-word"><span className="rv-hot">{hot}</span>{punct} </span>
-              ) : (
-                <span key={i} className="rv-word">{tok} </span>
-              );
-            })}
-          </p>
+          <blockquote className="rv-quote">
+            <p className="rv-text">
+              {QUOTE.split(' ').map((tok, i) => {
+                const [, hot, punct] = tok.match(/^\*(.+)\*([,.]?)$/) ?? [];
+                return hot ? (
+                  <span key={i} className="rv-word"><span className="rv-hot">{hot}</span>{punct} </span>
+                ) : (
+                  <span key={i} className="rv-word">{tok} </span>
+                );
+              })}
+            </p>
+            <footer className="rv-after">
+              <cite>{QUOTE_BY}</cite>
+              <a className="rv-why cursor-target" href="/bio/">
+                What this means to me <span aria-hidden="true">→</span>
+              </a>
+            </footer>
+          </blockquote>
         </div>
+        <p className="rv-credit">Alexandre Cabanel, The Fallen Angel, 1847</p>
+      </div>
+      <div className="rv-frame" aria-hidden="true">
+        <span>img // cabanel_1847</span>
+        <span>zoom <b ref={zoom}>x1.25</b></span>
       </div>
     </section>
   );
@@ -149,7 +181,7 @@ function Pinned({ projects }: { projects: Project[] }) {
 /* ---------- Ask Antonio: "hack" the site. Buttons jump instantly; typed questions run a real semantic search ---------- */
 
 const ALL_PLACES = [
-  { label: 'About me', target: '#about', say: 'Opening the short version of me.' },
+  { label: 'About me', target: '#philosophy', say: 'Opening the longer version of me.' },
   { label: 'Projects', target: '#work', say: 'Opening the build log.' },
   { label: 'Gallery', target: '#gallery', say: 'Opening photos from the field.' },
   { label: 'Leadership', target: '#leadership', say: 'Opening how I lead teams.' },
@@ -287,7 +319,9 @@ function AskAntonio({ hasGallery }: { hasGallery: boolean }) {
 
 /* ---------- page ---------- */
 
-export default function Home({ projects, photos, leadershipHtml }: { projects: Project[]; photos: Photo[]; leadershipHtml: string }) {
+type HomeProps = { projects: Project[]; photos: Photo[]; leadershipHtml: string; art: string; resume?: string; cv?: string };
+
+export default function Home({ projects, photos, leadershipHtml, art, resume, cv }: HomeProps) {
   const size = Math.round(Math.min(innerWidth * 0.068, 116));
 
   return (
@@ -300,14 +334,19 @@ export default function Home({ projects, photos, leadershipHtml }: { projects: P
             <TechText text={NAME} fontSize={size} fontWeight={600} fontFamily={DISPLAY} color="#d8dee6" accentColor={ACCENT} intro="metrics" align="left" guides labels />
             <h1 className="sr-only">{NAME}</h1>
           </div>
-          <p className="hm-role"><ScrambledText scrambleColor={ACCENT} scrambleChars={GLYPHS}>AI engineer · NU Manila · hackathon team lead</ScrambledText></p>
+          <p className="hm-role"><ScrambledText scrambleColor={ACCENT} scrambleChars={GLYPHS}>AI/ML engineer · PM · solving real problems for people</ScrambledText></p>
+          {(resume || cv) && (
+            <p className="hm-docs">
+              <a className="rv-why cursor-target" href="/resume/">Résumé &amp; CV <span aria-hidden="true">→</span></a>
+            </p>
+          )}
           <a className="hm-scroll cursor-target" href="#about" aria-label="Scroll to the introduction">
             <span>scroll</span>
             <i aria-hidden="true" />
           </a>
         </header>
 
-        <Reveal />
+        <Reveal art={art} />
 
         <section id="work" className="hm-work">
           <Pinned projects={projects} />
@@ -324,7 +363,7 @@ export default function Home({ projects, photos, leadershipHtml }: { projects: P
         )}
 
         <section id="leadership" className="hm-section hm-about">
-          <Heading text="Leading teams" />
+          <Heading text="Leadership" />
           <div dangerouslySetInnerHTML={{ __html: leadershipHtml }} />
         </section>
 
@@ -335,13 +374,25 @@ export default function Home({ projects, photos, leadershipHtml }: { projects: P
           </ol>
         </section>
 
+        <section id="philosophy" className="hm-section hm-about hm-me">
+          <Heading text="About me" />
+          <div>
+            <p>AI/ML engineer, part-time PM, full-time problem solver. The longer (and less serious) version is one click away.</p>
+            <blockquote>
+              <p>Think of yourself as dead. You have lived your life. Now take what's left and live it properly.</p>
+              <p>Marcus Aurelius, Meditations 7.56</p>
+            </blockquote>
+          </div>
+          <a className="rv-why cursor-target" href="/bio/">Read the longer version <span aria-hidden="true">→</span></a>
+        </section>
+
         <footer id="contact" className="hm-section hm-close">
           <div className="hm-close-stroke">
             <StrokeText text="Building things that (hopefully) work." trigger="scroll" fontSize={Math.round(Math.min(innerWidth * 0.046, 80))} fontWeight={600} fontFamily={DISPLAY} strokeColor={ACCENT} fillColor="#d8dee6" marching />
             <h2 className="sr-only">Building things that (hopefully) work.</h2>
           </div>
-          <p className="hm-muted">Open to full-time AI engineering roles, fellowships, and interesting problems.</p>
-          <p className="hm-contact"><a className="cursor-target" href="mailto:garciaantoniojrb@gmail.com">garciaantoniojrb@gmail.com</a><a className="cursor-target" href="https://www.linkedin.com/in/2nie/">LinkedIn</a><a className="cursor-target" href="https://github.com/2nieGarcia">GitHub</a></p>
+          <p className="hm-muted">Studying and ready to work: open to AI/ML internships and roles I can take on while finishing my BSCS.</p>
+          <p className="hm-contact"><a className="cursor-target" href="mailto:garciaantoniojrb@gmail.com">garciaantoniojrb@gmail.com</a><a className="cursor-target" href="https://www.linkedin.com/in/2nie/">LinkedIn</a><a className="cursor-target" href="https://github.com/2nieGarcia">GitHub</a>{(resume || cv) && <a className="cursor-target" href="/resume/">Résumé &amp; CV</a>}</p>
         </footer>
       </main>
 

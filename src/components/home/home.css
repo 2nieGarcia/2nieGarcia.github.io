@@ -6,6 +6,7 @@
 .hm-hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 6rem var(--gutter) 3rem; max-width: 84rem; margin: 0 auto; position: relative; }
 .hm-tech { height: clamp(9rem, 15vw, 13rem); position: relative; margin-bottom: 1rem; }
 .hm-role { font: 500 clamp(1rem, 1.6vw, 1.25rem) var(--mono); color: var(--muted); margin: 0; }
+.hm-docs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.75rem 0 0; align-self: flex-start; }
 .hm-role .scrambled-text { margin: 0; max-width: none; font: inherit; }
 .hm-role .scrambled-text p { margin: 0; }
 .hm-scroll { position: absolute; left: 50%; bottom: 2rem; transform: translateX(-50%); display: grid; justify-items: center; gap: 0.6rem; color: var(--muted); text-decoration: none; font: 0.75rem var(--mono); letter-spacing: 0.2em; text-transform: uppercase; }
@@ -17,12 +18,37 @@
 /* the big reveal: a framed panel opens to full bleed, then the words light up */
 .rv { height: 100svh; position: relative; }
 .rv-panel { position: absolute; inset: 0; overflow: hidden; background: #050709; border-block: 1px solid var(--line); }
-.rv-glow { position: absolute; left: 50%; top: 50%; width: 120vmax; height: 120vmax; margin: -60vmax 0 0 -60vmax; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--accent) 22%, transparent) 0%, transparent 55%); }
+/* the painting: object-position and transform-origin both sit on the angel's eye, so the push-in lands there at any aspect ratio */
+.rv-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 33.75% 33%; transform-origin: 33.75% 33%; filter: grayscale(1) brightness(0.6) contrast(1.15); will-change: transform, filter; }
+.rv-shade { position: absolute; inset: 0; background: radial-gradient(circle at 33.75% 33%, transparent 8%, rgb(5 7 9 / 0.86) 34%), linear-gradient(90deg, transparent 25%, rgb(5 7 9 / 0.88) 68%), linear-gradient(0deg, rgb(5 7 9 / 0.7), transparent 40%); }
+/* HUD layers: coral duotone that fades as the scan decodes, scanlines, one sweep, a reticle on the eye, and a viewfinder frame */
+.rv-tint { position: absolute; inset: 0; background: var(--accent); mix-blend-mode: color; }
+.rv-panel::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgb(0 0 0 / 0.22) 0 1px, transparent 1px 3px); }
+.rv-sweep { position: absolute; left: 0; right: 0; height: 18%; background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--accent) 22%, transparent) 85%, var(--accent) 100%); opacity: 0.55; mix-blend-mode: screen; }
+.rv-reticle { position: absolute; left: 33.75%; top: 33%; width: clamp(4.5rem, 9vw, 8rem); aspect-ratio: 1; translate: -50% -50%; --c: var(--accent); background: linear-gradient(var(--c) 0 0) top left / 14px 2px, linear-gradient(var(--c) 0 0) top left / 2px 14px, linear-gradient(var(--c) 0 0) top right / 14px 2px, linear-gradient(var(--c) 0 0) top right / 2px 14px, linear-gradient(var(--c) 0 0) bottom left / 14px 2px, linear-gradient(var(--c) 0 0) bottom left / 2px 14px, linear-gradient(var(--c) 0 0) bottom right / 14px 2px, linear-gradient(var(--c) 0 0) bottom right / 2px 14px; background-repeat: no-repeat; }
+.rv-reticle span { position: absolute; left: calc(100% + 0.5rem); top: 0; font: 500 0.65rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.rv-frame { position: absolute; pointer-events: none; --c: color-mix(in oklab, var(--accent) 75%, white); background: linear-gradient(var(--c) 0 0) top left / 22px 2px, linear-gradient(var(--c) 0 0) top left / 2px 22px, linear-gradient(var(--c) 0 0) top right / 22px 2px, linear-gradient(var(--c) 0 0) top right / 2px 22px, linear-gradient(var(--c) 0 0) bottom left / 22px 2px, linear-gradient(var(--c) 0 0) bottom left / 2px 22px, linear-gradient(var(--c) 0 0) bottom right / 22px 2px, linear-gradient(var(--c) 0 0) bottom right / 2px 22px; background-repeat: no-repeat; }
+.rv-frame span { position: absolute; font: 500 0.68rem/1 var(--mono); background: rgb(5 7 9 / 0.72); padding: 0.35rem 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.rv-frame span:first-child { left: 0.9rem; top: 0.9rem; }
+.rv-frame span:last-child { right: 0.9rem; top: 0.9rem; }
+.rv-frame b { color: var(--accent); font-weight: 500; }
 .rv-grid { position: absolute; inset: 0; background-image: linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%); }
-.rv-inner { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; max-width: 72rem; margin: 0 auto; padding: 0 var(--gutter); }
-.rv-text { font: var(--display-weight, 600) clamp(1.5rem, 3.2vw, 3rem) / 1.18 var(--display); letter-spacing: -0.02em; margin: 0 0 3rem; }
+.rv-inner { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; max-width: 80rem; margin: 0 auto; padding: 0 var(--gutter); }
+.rv-quote { margin: 0; max-width: 34rem; }
+.rv-text { font: var(--display-weight, 600) clamp(2rem, 4.6vw, 4.25rem) / 1.08 var(--display); letter-spacing: -0.02em; text-transform: uppercase; margin: 0 0 1.5rem; }
 .rv-word { display: inline-block; white-space: pre; will-change: transform, filter, opacity; }
 .rv-hot { color: var(--accent); }
+.rv-after { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+.rv-after cite { font: 500 0.8rem/1.4 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.rv-why { font: 600 0.85rem/1 var(--display); display: inline-block; text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; color: var(--bg); background: var(--accent); border: 0; padding: 0.8rem 1.1rem; clip-path: var(--notch); cursor: pointer; }
+.rv-why:hover, .rv-why:focus-visible { background: #fff; outline: none; }
+.rv-credit { position: absolute; left: var(--gutter); bottom: 1.25rem; margin: 0; font: 500 0.7rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.45); }
+@media (max-width: 720px) {
+  .rv-inner { justify-content: flex-end; align-items: stretch; padding-bottom: 4rem; }
+  .rv-shade { background: linear-gradient(0deg, rgb(5 7 9 / 0.92) 15%, transparent 60%); }
+  .rv-credit { display: none; }
+  .rv-frame span:first-child { display: none; }
+}
 
 /* section headings */
 .hm-section { max-width: 80rem; margin: 0 auto; padding: clamp(6rem, 12vw, 10rem) var(--gutter) 0; }
@@ -30,7 +56,15 @@
 .hm-section h2 .scrambled-text, .hm-pinned h2 .scrambled-text { margin: 0; max-width: none; font: inherit; }
 .hm-section h2 .scrambled-text p, .hm-pinned h2 .scrambled-text p { margin: 0; }
 .hm-h2-stroke { margin: 0 0 2rem; max-width: 100%; overflow: hidden; }
-.hm-about p { font-size: clamp(1.15rem, 2vw, 1.5rem); max-width: 46rem; }
+.hm-about > div > p { font-size: clamp(1.15rem, 2vw, 1.5rem); max-width: 46rem; }
+.hm-about ul { list-style: none; padding: 0; margin: 2rem 0; max-width: 52rem; border-top: 1px solid var(--line); }
+.hm-about li { padding: 1rem 0; border-bottom: 1px solid var(--line); font-size: 1.05rem; color: color-mix(in oklab, var(--fg) 85%, var(--muted)); }
+.hm-about li strong { display: block; margin-bottom: 0.25rem; font: 600 0.85rem/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.hm-me .rv-why { margin-top: 0.5rem; }
+.hm-me blockquote { margin: 2.5rem 0; padding: 0.25rem 0 0.25rem 1.5rem; max-width: 46rem; border-left: 2px solid var(--accent); }
+.hm-me blockquote p { font: var(--display-weight, 600) clamp(1.4rem, 2.8vw, 2.1rem) / 1.2 var(--display); text-transform: uppercase; margin: 0 0 0.75rem; }
+.hm-me blockquote p + p { font: 500 0.8rem/1.4 var(--mono); letter-spacing: 0.08em; color: var(--muted); }
+.hm-me > div > p:first-child { color: var(--accent); }
 .hm-muted { color: var(--muted); font-size: 0.95rem; }
 .hm-timeline { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .hm-timeline li { display: grid; grid-template-columns: 12rem 1fr; gap: 0.25rem 2rem; padding: 1.25rem 0; border-bottom: 1px solid var(--line); }

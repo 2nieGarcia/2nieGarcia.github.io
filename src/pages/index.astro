@@ -4,6 +4,12 @@ import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Home from '../components/home/Home';
 import { coverDataUri } from '../lib/cover';
+import fallenAngel from '../assets/art/fallen-angel.jpg'; // public domain, Wikimedia Commons
+import fs from 'node:fs';
+
+// Résumé and CV: drop PDFs at public/resume.pdf and public/cv.pdf and their hero and footer buttons appear.
+const resume = fs.existsSync('public/resume.pdf') ? '/resume.pdf' : undefined;
+const cv = fs.existsSync('public/cv.pdf') ? '/cv.pdf' : undefined;
 
 const byOrder = (a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) =>
   a.data.order - b.data.order || b.data.pushedAt.localeCompare(a.data.pushedAt);
@@ -31,13 +37,14 @@ const photos = await Promise.all(
 );
 
 const leadership = await getEntry('about', 'leadership');
+const art = (await getImage({ src: fallenAngel, width: 2400, format: 'webp' })).src;
 ---
 
 <Base
   title="Antonio B. Garcia Jr. | AI Engineer"
   description="AI engineer building RAG pipelines, multi-agent systems, and the hardware they talk to, and leading the hackathon teams that ship them."
 >
-  <Home client:only="react" projects={projects} photos={photos} leadershipHtml={leadership?.rendered?.html ?? ''} />
+  <Home client:only="react" projects={projects} photos={photos} leadershipHtml={leadership?.rendered?.html ?? ''} art={art} resume={resume} cv={cv} />
   <noscript>
     <main style="padding: 4rem 1.5rem; max-width: 46rem; margin: 0 auto">
       <h1>Antonio B. Garcia Jr.</h1>
