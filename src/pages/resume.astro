@@ -1,0 +1,76 @@
+---
+// One viewer for both documents: a top bar switches between the 1-page résumé and the 2-page CV (?doc=cv).
+import Base from '../layouts/Base.astro';
+import Chrome from '../components/home/Chrome';
+
+const DOCS = [
+  { id: 'resume', label: 'Résumé', pages: '1 page', src: '/resume.pdf', file: 'Garcia_Antonio_B_Jr_Resume.pdf' },
+  { id: 'cv', label: 'CV', pages: '2 pages', src: '/cv.pdf', file: 'Garcia_Antonio_B_Jr_CV.pdf' },
+];
+---
+
+<Base title="Résumé & CV | Antonio B. Garcia Jr." description="Résumé and full CV of Antonio B. Garcia Jr., AI/ML engineer and project manager.">
+  <Chrome client:only="react" />
+  <main class="dv">
+    <nav class="dv-bar" aria-label="Documents">
+      <a class="dv-back cursor-target" href="/">← antonio.sys</a>
+      <div class="dv-switch" role="tablist">
+        {DOCS.map((d, i) => (
+          <button type="button" role="tab" class="cursor-target" data-doc={d.id} data-src={d.src} data-file={d.file} aria-selected={i === 0 ? 'true' : 'false'}>
+            {d.label} <span>{d.pages}</span>
+          </button>
+        ))}
+      </div>
+      <a class="dv-dl cursor-target" id="dvDl" href={DOCS[0].src} download={DOCS[0].file}>Download ↓</a>
+    </nav>
+
+    <object class="dv-pdf" id="dvPdf" data={`${DOCS[0].src}#view=FitH`} type="application/pdf" aria-label="Résumé">
+      <!-- shown where the browser can't display PDFs inline (most phones) -->
+      <p class="dv-fallback">This browser can't show the PDF here. <a id="dvOpen" href={DOCS[0].src}>Open it</a> instead.</p>
+    </object>
+  </main>
+</Base>
+
+<style>
+  .dv { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100svh; max-width: 72rem; margin: 0 auto; padding: 0 var(--gutter) 1.25rem; }
+  .dv-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 1.25rem 0; }
+  .dv-back { font: 0.8rem var(--mono); color: var(--fg); text-decoration: none; }
+  .dv-back:hover { color: var(--accent); }
+  .dv-switch { display: flex; clip-path: var(--notch); box-shadow: inset 0 0 0 1px var(--line); background: rgb(7 9 11 / 0.85); }
+  .dv-switch button { font: var(--display-weight) 0.85rem var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: none; border: 0; padding: 0.75rem 1.2rem; cursor: pointer; }
+  .dv-switch button span { font: 0.7rem var(--mono); letter-spacing: 0.04em; text-transform: none; opacity: 0.8; }
+  .dv-switch button[aria-selected='true'] { background: var(--accent); color: var(--bg); }
+  .dv-switch button:focus-visible { outline: 2px solid var(--fg); outline-offset: -4px; }
+  .dv-dl { font: var(--display-weight) 0.8rem var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); text-decoration: none; padding: 0.7rem 1rem; clip-path: var(--notch); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 55%, var(--line)); background: rgb(7 9 11 / 0.85); }
+  .dv-dl:hover { background: var(--accent); color: var(--bg); }
+  .dv-pdf { flex: 1; width: 100%; min-height: 0; border: 0; clip-path: var(--notch); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+  .dv-fallback { margin: 0; padding: 3rem 1.5rem; text-align: center; color: var(--muted); }
+  @media (max-width: 520px) { .dv-back { flex-basis: 100%; } }
+</style>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('.dv-switch button')];
+  let pdf = document.getElementById('dvPdf') as HTMLObjectElement;
+  const dl = document.getElementById('dvDl') as HTMLAnchorElement;
+
+  function show(id: string) {
+    const tab = tabs.find((t) => t.dataset.doc === id) ?? tabs[0];
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+    const src = tab.dataset.src!;
+    // swapping the node is the reliable way to make every browser load a new PDF into an <object>
+    const next = pdf.cloneNode(true) as HTMLObjectElement;
+    next.data = `${src}#view=FitH`;
+    next.setAttribute('aria-label', tab.textContent!.trim());
+    pdf.replaceWith(next);
+    pdf = next;
+    dl.href = (pdf.querySelector('#dvOpen') as HTMLAnchorElement).href = src;
+    dl.download = tab.dataset.file!;
+    const url = new URL(location.href);
+    tab.dataset.doc === 'resume' ? url.searchParams.delete('doc') : url.searchParams.set('doc', tab.dataset.doc!);
+    history.replaceState(null, '', url);
+  }
+
+  tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.doc!)));
+  const wanted = new URLSearchParams(location.search).get('doc');
+  if (wanted && wanted !== 'resume') show(wanted);
+</script>
