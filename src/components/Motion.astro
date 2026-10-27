@@ -1,0 +1,130 @@
+---
+// Intro (home, once per session): a boot log, then a lock-on reticle, then the page opens out of the lock point.
+// Page transition (every internal link): the page collapses into the reticle and opens again on the next page.
+// Four black panels frame a "hole" whose inset is --i (top/bottom) and --j (left/right): 50% = closed, 0% = open.
+---
+
+<script is:inline>
+  // runs before first paint so a pending intro or transition never flashes the page underneath
+  (() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let s;
+    try { s = sessionStorage; } catch { return; }
+    const tr = s.getItem('mo-tr');
+    if (tr) { s.removeItem('mo-tr'); s.setItem('mo-intro', '1'); document.documentElement.dataset.mo = 'tr'; document.documentElement.dataset.moTo = tr; return; }
+    if (location.pathname === '/' && !s.getItem('mo-intro')) { s.setItem('mo-intro', '1'); document.documentElement.dataset.mo = 'intro'; }
+  })();
+</script>
+
+<div class="mo" aria-hidden="true">
+  <i class="mo-p mo-t"></i><i class="mo-p mo-b"></i><i class="mo-p mo-l"></i><i class="mo-p mo-r"></i>
+  <div class="mo-frame"></div>
+  <i class="mo-h"></i><i class="mo-v"></i>
+  <div class="mo-ret"></div>
+  <p class="mo-read"></p>
+  <div class="mo-boot"><pre class="mo-log">&gt; mount antonio.sys</pre><div class="mo-bar"><i></i></div></div>
+</div>
+
+<style is:global>
+  .mo { --i: 50%; --j: 50%; position: fixed; inset: 0; z-index: 2147483000; pointer-events: none; visibility: hidden; }
+  html[data-mo] .mo { visibility: visible; pointer-events: auto; }
+  .mo-p { position: absolute; background: #050709; }
+  .mo-t { top: 0; left: 0; right: 0; height: var(--i); }
+  .mo-b { bottom: 0; left: 0; right: 0; height: var(--i); }
+  .mo-l { top: var(--i); bottom: var(--i); left: 0; width: var(--j); }
+  .mo-r { top: var(--i); bottom: var(--i); right: 0; width: var(--j); }
+  .mo-frame { position: absolute; inset: var(--i) var(--j); --c: var(--accent);
+    background: linear-gradient(var(--c) 0 0) top left / 26px 2px, linear-gradient(var(--c) 0 0) top left / 2px 26px, linear-gradient(var(--c) 0 0) top right / 26px 2px, linear-gradient(var(--c) 0 0) top right / 2px 26px,
+      linear-gradient(var(--c) 0 0) bottom left / 26px 2px, linear-gradient(var(--c) 0 0) bottom left / 2px 26px, linear-gradient(var(--c) 0 0) bottom right / 26px 2px, linear-gradient(var(--c) 0 0) bottom right / 2px 26px; background-repeat: no-repeat; }
+  .mo-h, .mo-v { position: absolute; background: color-mix(in oklab, var(--accent) 70%, transparent); transform: scale(0); }
+  .mo-h { left: 0; right: 0; top: 50%; height: 1px; }
+  .mo-v { top: 0; bottom: 0; left: 50%; width: 1px; }
+  .mo-ret { position: absolute; left: 50%; top: 50%; width: 8rem; aspect-ratio: 1; translate: -50% -50%; opacity: 0; --c: var(--accent);
+    background: linear-gradient(var(--c) 0 0) top left / 16px 2px, linear-gradient(var(--c) 0 0) top left / 2px 16px, linear-gradient(var(--c) 0 0) top right / 16px 2px, linear-gradient(var(--c) 0 0) top right / 2px 16px,
+      linear-gradient(var(--c) 0 0) bottom left / 16px 2px, linear-gradient(var(--c) 0 0) bottom left / 2px 16px, linear-gradient(var(--c) 0 0) bottom right / 16px 2px, linear-gradient(var(--c) 0 0) bottom right / 2px 16px; background-repeat: no-repeat; }
+  .mo-read { position: absolute; left: calc(50% + 5rem); top: calc(50% - 4rem); margin: 0; font: 0.72rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+  .mo-boot { position: absolute; left: 50%; top: 50%; width: min(26rem, calc(100vw - 2.5rem)); translate: -50% -50%; opacity: 0; }
+  .mo-log { margin: 0 0 1rem; min-height: 6.8em; font: 0.82rem/1.7 var(--mono); color: var(--muted); white-space: pre; }
+  .mo-log b { color: var(--accent); font-weight: 500; }
+  .mo-bar { height: 2px; background: var(--line); }
+  .mo-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+  html[data-mo='tr'] .mo-ret { opacity: 1; }
+  html[data-mo='intro'] .mo-boot { opacity: 1; } /* doubles as the loading screen until the page is ready */
+  @media (max-width: 520px) { .mo-read { left: 50%; top: calc(50% + 4.75rem); translate: -50% 0; } }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const root = document.documentElement;
+  const mo = document.querySelector<HTMLElement>('.mo')!;
+  const read = mo.querySelector<HTMLElement>('.mo-read')!;
+  const log = mo.querySelector<HTMLElement>('.mo-log')!;
+  const BOOT = ['> mount antonio.sys', '> index space.json', '> clearance: guest', '> <b>ACCESS GRANTED</b>'];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let tl: gsap.core.Timeline | undefined;
+
+  const done = () => { delete root.dataset.mo; delete root.dataset.moTo; gsap.set(mo, { clearProps: '--i,--j' }); };
+
+  // the hole opens out of the lock point, HUD corners riding its edge, then everything clears
+  const open = (t: gsap.core.Timeline, at: number | string) =>
+    t.to(mo, { '--i': '0%', '--j': '0%', duration: 0.75, ease: 'power3.inOut' }, at)
+      .to('.mo-ret, .mo-read, .mo-h, .mo-v', { opacity: 0, duration: 0.25 }, '<')
+      .to('.mo-frame', { opacity: 0, duration: 0.3 }, '>-0.15')
+      .call(done);
+
+  function intro() {
+    tl = gsap.timeline();
+    tl.set('.mo-boot', { opacity: 1 }).set('.mo-bar i', { width: '0%' });
+    BOOT.forEach((_, i) => tl!.call(() => { log.innerHTML = BOOT.slice(0, i + 1).join('\n'); }, [], 0.05 + i * 0.2));
+    tl.to('.mo-bar i', { width: '100%', duration: 0.8, ease: 'power1.inOut' }, 0.05)
+      .to('.mo-boot', { opacity: 0, duration: 0.2 }, 0.95)
+      .to('.mo-h', { scale: 1, duration: 0.4, ease: 'power3.out' }, 1.0)
+      .to('.mo-v', { scale: 1, duration: 0.4, ease: 'power3.out' }, 1.05)
+      .fromTo('.mo-ret', { scale: 2.6, rotate: 45, opacity: 0 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 1.1)
+      .call(() => { read.textContent = 'lock · antonio.sys'; }, [], 1.5);
+    open(tl, 1.65);
+    // impatient visitors skip straight to the site
+    const skip = () => { tl?.progress(1); removeEventListener('keydown', skip); mo.removeEventListener('pointerdown', skip); };
+    addEventListener('keydown', skip);
+    mo.addEventListener('pointerdown', skip);
+  }
+
+  function arrive() {
+    read.textContent = `→ ${root.dataset.moTo ?? ''}`;
+    tl = gsap.timeline({ delay: 0.15 });
+    open(tl, 0);
+  }
+
+  // wait for the heavy page start-up (WebGL grid, React) so the sequence doesn't play into frozen frames
+  const whenReady = (fn: () => void) => {
+    const go = () => requestAnimationFrame(() => requestAnimationFrame(fn));
+    document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true });
+  };
+  if (root.dataset.mo === 'intro') whenReady(intro);
+  else if (root.dataset.mo === 'tr') whenReady(arrive);
+
+  // leaving: collapse into the reticle, then navigate (the next page opens out of it)
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a || reduced || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (a.target === '_blank' || a.hasAttribute('download')) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || /\.(pdf|png|jpe?g|webp|mp4)$/i.test(url.pathname)) return;
+    if (url.pathname === location.pathname) return; // same-page anchors scroll as usual
+    e.preventDefault();
+    const go = () => { location.href = url.href; };
+    try { sessionStorage.setItem('mo-tr', url.pathname); } catch { return go(); }
+    read.textContent = `→ ${url.pathname}`;
+    root.dataset.mo = 'tr';
+    tl?.kill();
+    tl = gsap.timeline({ onComplete: go });
+    tl.set(mo, { '--i': '0%', '--j': '0%' }).set('.mo-frame', { opacity: 1 }).set('.mo-ret', { opacity: 0 })
+      .to(mo, { '--i': '50%', '--j': '50%', duration: 0.5, ease: 'power3.in' })
+      .fromTo('.mo-ret', { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25 }, 0.35);
+    setTimeout(go, 1500); // never strand the visitor if an animation stalls
+  });
+
+  // back/forward cache can restore the page mid-transition
+  addEventListener('pageshow', (e) => { if (e.persisted) { tl?.kill(); done(); } });
+</script>

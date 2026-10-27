@@ -4,6 +4,7 @@ import '@fontsource/chakra-petch/600.css';
 import '@fontsource/barlow/400.css';
 import '@fontsource/barlow/500.css';
 import '@fontsource-variable/geist-mono';
+import Motion from '../components/Motion.astro';
 
 interface Props {
   title: string;
@@ -26,6 +27,7 @@ const { title, description } = Astro.props;
     <slot name="head" />
   </head>
   <body>
+    <Motion />
     <slot />
   </body>
 </html>
